@@ -63,6 +63,6 @@ var x = Vector2d(0,0);
 
 # Feedbacks
 
-Welcome to raise up an issue to send email with me. 
+Welcome to raise up an issue or send email with me. 
 Mail: hmev@outlook.com
 
