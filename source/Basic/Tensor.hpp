@@ -1,8 +1,8 @@
 #pragma once
 
 #include <Vector>
-#include <Math/Basic/Vector.hpp>
-#include <Math/Basic/Index.hpp>
+#include <Basic/Vector.hpp>
+#include <Basic/Index.hpp>
 
 NameSpace_Math_Begin
 
@@ -17,7 +17,7 @@ Only allow initiated from operator() and then assigned by value;
 
 
 template <typename T, int N>
-class Tensor : private Array
+struct Tensor : private Array
 {
 	typedef Array<T, N> basetype;
 
@@ -29,10 +29,10 @@ public:
 		maxI = maxIndex.toIndex();
 		adjust();
 	}
-	IndexD<N> maxIndex() const
+	ScaleD<N> scale() const
 	{
-		IndexD<N> index;
-		index.fromIndex(basetype::maxIndex());
+		ScaleD<N> index;
+		index.fromIndex(basetype::scale());
 	}
 
 public :

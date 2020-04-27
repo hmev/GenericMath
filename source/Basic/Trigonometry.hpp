@@ -2,8 +2,8 @@
 #include <cmath>
 #include <complex.h>
 
-#include "Math/Math.h"
-#include "Math/Basic/Complex.hpp"
+#include <Config.h>
+#include <Basic/Complex.hpp>
 
 NameSpace_Math_Begin
 

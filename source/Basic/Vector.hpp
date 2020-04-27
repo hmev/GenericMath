@@ -1,13 +1,30 @@
-#ifndef __MATH_VECTOR_H__
-#define __MATH_VECTOR_H__
+/// COMMENT
+/// \file Vector.hpp
+/// \author {hmev} ({hmev@outlook.com})
+/// \brief 
+/// \version 0.1
+/// \date 2020-04-26
+/// 
+/// @copyright Copyright (c) {2020}
+/// 
+/// 
+#pragma once
 
 #include <cmath>
 #include <initializer_list>
-#include "Math/Math.h"
-#include "Math/Basic/NumTrait.hpp"
+#include <Config.h>
+#include <Basic/NumTrait.hpp>
+
+#include <iostream>
 
 NameSpace_Math_Begin
 
+/// COMMENT
+/// \brief 
+/// 
+/// \tparam T 
+/// \tparam N 
+/// 
 template <typename T, int N>
 struct Vector
 {
@@ -16,6 +33,10 @@ protected:
 
 public:
 
+	/// COMMENT
+	/// \brief Construct a new Vector object
+	/// 
+	/// 
 	Vector(){}
 	~Vector(){}
 
@@ -30,13 +51,6 @@ public:
 		int i = 0;
 		for (auto iter = list.begin(); iter != list.end(); iter++) 	{ data[i++] = *iter; }
 	}	
-	/* Unsafe */
-	template <typename... Args>
-	Vector(const Args... args)
-	{
-		//assert(args.size() == N);	// TODO
-		for (int i = 0; i < N; i++) data[i] = args[i];
-	}
 
 	template <typename T2>
 	operator Vector<T2, N>()
@@ -74,7 +88,7 @@ public:
 		typedef typename TraitPromoter<T, T2>::promoted promoted_type;
 		for (int i = 0; i < N; i++)
 		{
-			if (Trait<promoted_type>::equal(promoted_type(data[i]), promoted_type(v2.data[i])))
+			if (!Trait<promoted_type>::equal(promoted_type(data[i]), promoted_type(v2.data[i])))
 				return false;
 		}
 		return true;
@@ -86,19 +100,25 @@ public:
 		for (int i = 0; i < N; i++)
 		{
 			if (!Trait<promoted_type>::equal(promoted_type(data[i]), promoted_type(v2.data[i])))
-				return false;
+				return true;
 		}
 		return false;
 	}
 
 	template <typename T2>
-	Vector<T,N>& operator= (const Vector<T2, N> v2)
+	void operator= (const Vector<T2, N> v2)
 	{
 		for (int i = 0; i < N; i++)
 		{
 			data[i] = v2.data[i];
 		}
-		return (*this);
+	}
+
+	template <typename T2>
+	void operator= (const std::initializer_list<T>& list)
+	{
+		int i = 0;
+		for (auto iter = list.begin(); iter != list.end(); iter++) { data[i++] = *iter; }
 	}
 
 public : 
@@ -120,6 +140,7 @@ public :
 		{
 			data[i] -= T(v2.data[i]);
 		}
+		return (*this);
 	}
 
 	template <typename T2>
@@ -129,6 +150,7 @@ public :
 		{
 			data[i] *= T(a);
 		}
+		return (*this);
 	}
 
 	template <typename T2>
@@ -137,22 +159,6 @@ public :
 		for (int i = 0; i < N; i++)
 		{
 			data[i] /= T(a);
-		}
-	}
-
-public:
-	template <typename T>
-	Vector<T, N>& scale(const T& v)
-	{
-		(*this) *= v;
-		return (*this);
-	}
-	template <typename T>
-	Vector<T, N>& scale(const Vector<T, N>& v)
-	{
-		for (int i = 0; i < N; i++)
-		{
-			data[i] *= v[i];
 		}
 		return (*this);
 	}
@@ -296,7 +302,31 @@ Vector<T, N> scale(const Vector<T, N>& vec, const Vector<T, N>& _scale)
 // Product Space
 
 template <typename T, int N>
-Vector<T, N> dot(const Vector<T, N>& vec, const Vector<T, N>& _scale)
+T dot(const Vector<T, N>& vec1, const Vector<T, N>& vec2)
+{
+	T value = 0;
+
+	for (int i = 0; i < N; i++)
+	{
+		value += vec1[i] * vec2[i];
+	}
+	return value;
+}
+
+template <typename T, int N>
+Vector<T, N> inPlaceAdd(const Vector<T, N>& vec, const Vector<T, N>& _scale)
+{
+	Vector<T, N> v2;
+
+	for (int i = 0; i < N; i++)
+	{
+		v2[i] = vec[i] + _scale[i];
+	}
+	return std::move(v2);
+}
+
+template <typename T, int N>
+Vector<T, N> inPlaceMul(const Vector<T, N>& vec, const Vector<T, N>& _scale)
 {
 	Vector<T, N> v2;
 
@@ -304,7 +334,27 @@ Vector<T, N> dot(const Vector<T, N>& vec, const Vector<T, N>& _scale)
 	{
 		v2[i] = vec[i] * _scale[i];
 	}
-	return v2;
+	return std::move(v2);
+}
+
+template <typename T, int N>
+T reduceSum(const Vector<T, N>& vec, int max = N)
+{
+	T value = 0;
+	for (int i = 0; i < max; i++)
+	{
+		value += vec[i];
+	}
+}
+
+template <typename T, int N>
+T reduceProduct(const Vector<T, N>& vec, int max = N)
+{
+	T value = 1;
+	for (int i = 0; i < max; i++)
+	{
+		value *= vec[i];
+	}
 }
 
 typedef Vector<int, 2> Vec2i;
@@ -318,5 +368,3 @@ template <typename T> using Vec2 = Vector<T, 2>;
 template <typename T> using Vec3 = Vector<T, 3>;
 
 NameSpace_Math_End
-
-#endif

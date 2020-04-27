@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Math/Math.h"
-#include "Math/Basic/Vector.hpp"
+#include <Config.h>
+#include <Basic/Vector.hpp>
 
 NameSpace_Math_Begin
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Math/Math.h>
-#include <Math/Generic/ParametricFunction.hpp>
+#include <Config.h>
+#include <Functor/Parametric.hpp>
 
 NameSpace_Math_Begin
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Math/Math.h"
+#include <Config.h>
 
 NameSpace_Math_Begin
 
@@ -15,7 +15,7 @@ struct Trait
 };
 
 template <>
-struct Trait < unsigned int >
+struct Trait < int >
 {
 	static const unsigned int level = 0;
 	static bool norm(int v) { return v; }
@@ -23,25 +23,9 @@ struct Trait < unsigned int >
 };
 
 template <>
-struct Trait < int >
-{
-	static const unsigned int level = 1;
-	static bool norm(int v) { return v; }
-	static bool equal(int v1, int v2) { return v1 == v2; }
-};
-
-template <>
-struct Trait < unsigned long >
-{
-	static const unsigned int level = 2;
-	static bool norm(long v) { return v; }
-	static bool equal(long v1, long v2) { return v1 == v2; }
-};
-
-template <>
 struct Trait < long >
 {
-	static const unsigned int level = 3;
+	static const unsigned int level = 1;
 	static bool norm(long v) { return v; }
 	static bool equal(long v1, long v2) { return v1 == v2; }
 };
@@ -49,7 +33,7 @@ struct Trait < long >
 template <>
 struct Trait < float >
 {
-	static const unsigned int level = 5;
+	static const unsigned int level = 2;
 	static bool norm(float v) { return v; }
 	static bool equal(float v1, float v2) { return Equal(v1, v2); }
 };
@@ -57,7 +41,7 @@ struct Trait < float >
 template <>
 struct Trait < double >
 {
-	static const unsigned int level = 7;
+	static const unsigned int level = 3;
 	static bool norm(double v) { return v; }
 	static bool equal(double v1, double v2) { return Equal(v1, v2); }
 };
@@ -68,47 +52,23 @@ struct TraitSelector;
 template <>
 struct TraitSelector < 0 >
 {
-	typedef unsigned int type;
+	typedef int type;
 };
 
 template <>
 struct TraitSelector < 1 >
 {
-	typedef int type;
+	typedef long type;
 };
 
 template <>
 struct TraitSelector < 2 >
 {
-	typedef unsigned long type;
+	typedef float type;
 };
 
 template <>
 struct TraitSelector < 3 >
-{
-	typedef long type;
-};
-
-template <>
-struct TraitSelector < 4 >
-{
-	typedef float type;
-};
-
-template <>
-struct TraitSelector < 5 >
-{
-	typedef float type;
-};
-
-template <>
-struct TraitSelector < 6 >
-{
-	typedef double type;
-};
-
-template <>
-struct TraitSelector < 7 >
 {
 	typedef double type;
 };
