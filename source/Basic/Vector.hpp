@@ -14,16 +14,22 @@
 #include <initializer_list>
 #include <Config.h>
 #include <Basic/NumTrait.hpp>
+#include <Basic/Complex.hpp>
 
 #include <iostream>
 
 NameSpace_Math_Begin
 
-/// COMMENT
-/// \brief 
 /// 
-/// \tparam T 
-/// \tparam N 
+/// \brief Tiny Vector
+///
+/// Vector vs std::Vector
+/// Vector is for numerical storage specifically.
+/// Vector is scale-fixed. It always thinks the storage is fulfilled and unextendable.
+/// Vector has more functionality for linear algebra calculation.
+///
+/// \tparam T int, long, float, double, complex, etc.
+/// \tparam N dimension of vector space.
 /// 
 template <typename T, int N>
 struct Vector
@@ -363,6 +369,12 @@ typedef Vector<float, 2> Vec2f;
 typedef Vector<float, 3> Vec3f;
 typedef Vector<double, 2> Vec2d;
 typedef Vector<double, 3> Vec3d;
+typedef Vector<Complexi, 2> Vec2ci;
+typedef Vector<Complexf, 2> Vec2cf;
+typedef Vector<Complexd, 2> Vec2cd;
+typedef Vector<Complexi, 3> Vec3ci;
+typedef Vector<Complexf, 3> Vec3cf;
+typedef Vector<Complexd, 3> Vec3cd;
 
 template <typename T> using Vec2 = Vector<T, 2>;
 template <typename T> using Vec3 = Vector<T, 3>;

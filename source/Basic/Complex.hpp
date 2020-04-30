@@ -3,7 +3,6 @@
 #include <cmath>
 #include <Config.h>
 #include <Basic/NumTrait.hpp>
-#include <Basic/Vector.hpp>
 
 NameSpace_Math_Begin
 
@@ -14,8 +13,10 @@ public:
 	T re, im;
 public:
 	Complex() : re(), im() {}
-
-	Complex(T real, T imag) : re(real), im(imag) {}
+	template <typename T2>
+	Complex(T2 real) : re(real) {}
+	template <typename T2>
+	Complex(T2 real, T2 imag) : re(real), im(imag) {}
 
 	T real() { return re; }
 	T imag() { return im; }
@@ -24,46 +25,68 @@ public:
 	double angle()  { return atan2(im, re); }
 	double angleDeg() { return RAD2DEG(angle()); }
 
-	Complex<T>& operator=(const T& v)
+	template <typename T2>
+	Complex<T>& operator=(const T2& v)
 	{
 		re = v;
 		return (*this);
 	}
 
-	Complex<T>& operator=(const Complex<T>& c)
+	template <typename T2>
+	Complex<T>& operator=(const Complex<T2>& c)
 	{
 		re = c.re; im = c.im;
 		return (*this);
 	}
 
-	bool operator==(const Complex<T>& c) const 
+	template<typename T2>
+	bool operator==(const Complex<T2>& c) const 
 	{
 		return re == c.re && im == c.im;
 	}
 
-	bool operator!=(const Complex<T>& c) const
+	template <typename T2>
+	bool operator==(const T2& _re) const
+	{
+		return (re == _re) && (im == 0);
+	}
+
+	template <typename T2>
+	bool operator!=(const Complex<T2>& c) const
 	{
 		return re != c.re || im != c.im;
 	}
 
 public:
-	Complex<T>& operator+=(const T& v)
+	Complex<T> operator-()
+	{
+		return std::move(Complex<T>(-re, -im));
+	}
+
+	template <typename T2>
+	Complex<T>& operator+=(const T2& v)
 	{
 		re += v; 
 		return (*this);
 	}
-	Complex<T>& operator-=(const T& v)
+
+	template <typename T2>
+	Complex<T>& operator-=(const T2& v)
 	{
 		re -= v;
 		return (*this);
 	}
-	Complex<T>& operator*=(const T& v)
+
+	template <typename T2>
+	Complex<T>& operator*=(const T2& v)
 	{
 		re *= v;
 		im *= v;
 		return (*this);
 	}
-	Complex<T>& operator/=(const T& v)
+
+	template <typename T2>
+	Complex<T>& operator/=(const T2& v)
 	{
 		re /= v;
 		im /= v;
@@ -71,50 +94,78 @@ public:
 	}
 
 public:
-	Complex<T>& operator+=(const Complex<T>& c)
+	template <typename T2>
+	Complex<T>& operator+=(const Complex<T2>& c)
 	{
 		re += c.re; im += c.im;
 		return (*this);
 	}
-	Complex<T>& operator-=(const Complex<T>& c)
+	template <typename T2>
+	Complex<T>& operator-=(const Complex<T2>& c)
 	{
 		re -= c.re; im -= c.im;
 		return (*this);
 	}
-	Complex<T>& operator*=(const Complex<T>& c)
+	template <typename T2>
+	Complex<T>& operator*=(const Complex<T2>& c)
 	{
 		T r = re * c.re - im * c.im;
 		T i = re * c.im + im * c.re;
 		re = r; im = i;
 		return (*this);
 	}
-	Complex<T>& operator/=(const Complex<T>& c2)
+	template <typename T2>
+	Complex<T>& operator/=(const Complex<T2>& c2)
 	{
 		Complex<T> c;
 		T v = c2.re * c2.re + c2.im * c2.im;
 		c.re = re * c2.re + im * c2.im;
 		c.im = c2.re * im - re * c2.im;
-		(*this) = c;
+		(*this) = c / v;
 		return (*this);
 	}
 };
 
 template <typename T>
+Complex<T> I(const T& value)
+{
+	return std::move(Complex<T>(T(0), value)); 
+}
+
+template <typename T>
 Complex<T> operator+(const Complex<T>& c1, const Complex<T>& c2)
 {
-	Complex<T> c;
-	c.re = c1.re + c2.re;
-	c.im = c1.im + c2.im;
-	return c;
+	return std::move(Complex<T>(c1.re + c2.re, c1.im + c2.im));
+}
+
+template <typename T>
+Complex<T> operator+(const T& c1, const Complex<T>& c2)
+{
+	return std::move(Complex<T>(c1 + c2.re, c2.im));
+}
+
+template <typename T>
+Complex<T> operator+(const Complex<T>& c1, T& c2)
+{
+	return std::move(Complex<T>(c1.re + c2, c1.im));
 }
 
 template <typename T>
 Complex<T> operator-(const Complex<T>& c1, const Complex<T>& c2)
 {
-	Complex<T> c;
-	c.re = c1.re - c2.re;
-	c.im = c1.im - c2.im;
-	return c;
+	return std::move(Complex<T>(c1.re - c2.re, c1.im - c2.im));
+}
+
+template <typename T>
+Complex<T> operator-(const T& c1, const Complex<T>& c2)
+{
+	return std::move(Complex<T>(c1 - c2.re, -c2.im));
+}
+
+template <typename T>
+Complex<T> operator-(const Complex<T>& c1, const T& c2)
+{
+	return std::move(Complex<T>(c1.re - c2, c1.im));
 }
 
 template <typename T>
@@ -127,6 +178,12 @@ Complex<T> operator*(const Complex<T>& c1, const Complex<T>& c2)
 }
 
 template <typename T>
+Complex<T> operator*(const Complex<T>& c1, const T& v)
+{
+	return std::move(Complex<T>(c1.re * v, c1.im * v));
+}
+
+template <typename T>
 Complex<T> operator/(const Complex<T>& c1, const Complex<T>& c2)
 {
 	Complex<T> c;
@@ -136,6 +193,12 @@ Complex<T> operator/(const Complex<T>& c1, const Complex<T>& c2)
 
 	c /= v;
 	return c;
+}
+
+template <typename T>
+Complex<T> operator/(const Complex<T>& c1, const T& v)
+{
+	return std::move(Complex<T>(c1.re / v, c1.im / v));
 }
 
 template <typename T1, typename T2>
@@ -182,8 +245,6 @@ typedef Complex<int> Complexi;
 typedef Complex<float> Complexf;
 typedef Complex<double> Complexd;
 
-typedef Vector<Complexi, 2> Vec2ci;
-typedef Vector<Complexf, 2> Vec2cf;
-typedef Vector<Complexd, 2> Vec2cd;
+
 
 NameSpace_Math_End

@@ -25,7 +25,7 @@ NameSpace_Math_Begin
 ///     {4, 5}
 /// };
 ///
-/// \tparam T int, long, float, double, etc. 
+/// \tparam T int, long, float, double, complex, etc. 
 /// \tparam N length of the first dimension.
 /// \tparam M length of the second diemension.
 /// 
@@ -46,7 +46,7 @@ private:
 	///
 	/// !!IMPORTANT!!
 	/// NEVER indexing this raw data directly.
-	/// Instead, use the operator(), such as (*this)(i, j)
+	/// Instead, use the operator(), such as (*this)(i, j).
 	/// 
 	T data[M][N];
 
@@ -79,7 +79,7 @@ public:
 	/// 	{3, 4, 5},		
 	/// });
 	/// \param list a two-dimension initializer_list indicating the matrix.  
-	/// WARNING: initializer_list is the transpose of the storage member "data".
+	/// WARNING: initializer_list is arranged as the transpose of the storage member "data".
 	/// 
 	Matrix(const std::initializer_list<Vector<T, M>>& list)
 	{
@@ -113,7 +113,7 @@ public:
 	/// };
 	///
 	/// \param list a two-dimension initializer_list indicating the matrix
-	/// WARNING: initializer_list is the transpose of the storage member "data".
+	/// WARNING: initializer_list is arranged as the transpose of the storage member "data".
 	/// \return thistype&
 	/// 
 	void operator=(const std::initializer_list<Vector<T, M>>& list)
@@ -177,6 +177,22 @@ public:
 			v[j] = (*this)(i, j);
 		}
 		return std::move(v);
+	}
+
+	Vector<Vector<T, N>, M> vectors() const
+	{
+		Vector<Vector<T, N>, M> vecs; 
+		for (int j = 0; j < M; j++)
+			vecs[j] = vector(j);
+		return std::move(vecs);
+	}
+
+	Vector<Vector<T, M>, N> tvectors() const
+	{
+		Vector<Vector<T, M>, N> vecs; 
+		for (int i = 0; i < M; i++)
+			vecs[i] = tvector(i);
+		return std::move(vecs);
 	}
 
 	thistype& rmul(const Matrix<T, M, M>& m2)
@@ -249,11 +265,19 @@ Matrix<T, N, L> operator*(const Matrix<T, N, M>& m1, const Matrix<T, M, L>& m2)
 	return std::move(mul(m1, m2));
 }
 
-template <typename T, int N>
-Matrix<T, N, N> transpose(const Matrix<T, N, N>& matrix)
+template <typename T, int N, int M>
+Matrix<T, M, N> transpose(const Matrix<T, N, M>& matrix)
 {
-	Matrix<T, N, N> m = matrix;
-	m.transpose();
+	Matrix<T, M, N> m;
+
+	for (int j = 0; j < M; j++)
+	{
+		for (int i = 0; i < N; i++)
+		{
+			m(j, i) = matrix(i, j);
+		}
+
+	}
 	return std::move(m);
 }
 
@@ -301,6 +325,16 @@ public:
 		return std::move(m);
 	}
 
+	template <typename T, int N, int M>
+	static Matrix<T, N, M> ones()
+	{
+		Matrix<T, N, M> m;
+		for (int i = 0; i < N; i++) 
+			for (int j = 0; j < M; j++)
+				m(i, j) = 1;
+		return std::move(m);
+	}
+
 	template <typename T, int N>
 	static Matrix<T, N, N> eye()
 	{
@@ -309,27 +343,48 @@ public:
 		return std::move(m);
 	}
 
-	/* unsafe */
-	template <typename T, int N, typename... Args>
-	static Matrix<T, N, N> diag(Args... args)
+	template <typename T, int N>
+	static Matrix<T, N, N> diag(const Vector<T, N>& v)
 	{
 		Matrix<T, N, N> m;
-		for (int i = 0; i < N; i++) m(i, i) = args[i];
+		for (int i = 0; i < N; i++) 
+			m(i,i) = v[i];
 		return std::move(m);
 	}
 
-	template <typename T, int N>
-	static Matrix<T, N, N> diag(const std::initializer_list<T>& list)
+	template <typename T, int N, int M>
+	static Matrix<T, N, M> fromVectors(const Vector<Vector<T, N>, M> vecs)
 	{
-		Matrix<T, N, N> m;
-		int i;
-		for (auto iter = list.begin(); iter != list.end(); iter++) { m(i, i) = *iter; i++; }
+		Matrix<T, N, M> m;
+		for (int j = 0; j < M; j++)
+		{
+			for (int i = 0; i < N; i++)
+			{
+				m(i, j) = vecs[j][i];
+			}
+		}
+		return std::move(m);
+	}
+
+	template <typename T, int N, int M>
+	static Matrix<T, N, M> fromTVectors(const Vector<Vector<T, M>, N> vecs)
+	{
+		Matrix<T, N, M> m;
+		for (int j = 0; j < M; j++)
+		{
+			for (int i = 0; i < N; i++)
+			{
+				m(i, j) = vecs[i][j];
+			}
+		}
 		return std::move(m);
 	}
 };
 
 typedef Matrix<int, 2, 2> Mat2i;
 typedef Matrix<int, 3, 3> Mat3i;
+typedef Matrix<float, 2, 2> Mat2f;
+typedef Matrix<float, 3, 3> Mat3f;
 typedef Matrix<double, 2, 2> Mat2d;
 typedef Matrix<double, 3, 3> Mat3d;
 

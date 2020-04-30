@@ -85,7 +85,7 @@ struct Sphere<2> : public CoordSystem<2>
 		p[0] /* r */ = std::sqrt(l1 + point.z() * point.z());
 		p[1] /* phi */ = std::atan2(point.y(), point.x());
 
-		if (_Zero(p[1]) && point.y() > 0)
+		if (Zero(p[1]) && point.y() > 0)
 			p[1] = 0;
 		if (point.y() < 0)
 			p[1] += PI * 2.0;
@@ -154,7 +154,7 @@ struct Sphere<3> : public CoordSystem<3>
 		p[1] /* theta */ = std::atan2(point.z(), std::sqrt(l1));
 		p[2] /* phi */ = std::atan2(point.y(), point.x());
 
-		if (_Zero(p[2]) && point.y() > 0)
+		if (Zero(p[2]) && point.y() > 0)
 			p[2] = 0;
 		if (point.y() < 0)
 			p[2] += PI * 2.0;
@@ -207,7 +207,7 @@ struct Cylinder3 : public CoordSystem<3>
 		p[0] /* r */ = std::sqrt(l1 + point.z() * point.z());
 		p[1] /* phi */ = std::atan2(point.y(), point.x());
 
-		if (_Zero(p[1]) && point.y() > 0)
+		if (Zero(p[1]) && point.y() > 0)
 			p[1] = 0;
 		if (point.y() < 0)
 			p[1] += PI * 2.0;

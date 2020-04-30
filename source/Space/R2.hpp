@@ -47,7 +47,7 @@ namespace R2
 	template <typename T>
 	bool onLine(Point2<T> p1, Point2<T> p2, Point2<T> p3)
 	{
-		return _Zero(cross2(p1 - p2, p1 - p3));
+		return Zero(cross2(p1 - p2, p1 - p3));
 	}
 
 	//======================================================
