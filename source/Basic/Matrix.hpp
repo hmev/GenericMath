@@ -4,6 +4,7 @@
 #include <initializer_list>
 #include <Config.h>
 #include <Basic/Index.hpp>
+#include <iostream>
 
 NameSpace_Math_Begin
 
@@ -20,14 +21,22 @@ NameSpace_Math_Begin
 ///
 /// Sample of Matrix:
 /// Matrix<double, 2, 3> m = {
-///		{0, 1}
-///     {2, 3}
-///     {4, 5}
+///		{0, 1, 2}
+///     {3, 4, 5}
 /// };
 ///
+/// Index (i, j):
+/// i is the row index of the matrix.
+/// j is the column index of the matrix. 
+/// 
+///        j
+///       -- -- --
+///   i |  0  1  2
+///     |  3  4  5
+///
 /// \tparam T int, long, float, double, complex, etc. 
-/// \tparam N length of the first dimension.
-/// \tparam M length of the second diemension.
+/// \tparam N length of the first dimension(row dimension).
+/// \tparam M length of the second diemension(column dimension).
 /// 
 template <typename T, int N, int M>
 struct Matrix
@@ -84,11 +93,11 @@ public:
 	Matrix(const std::initializer_list<Vector<T, M>>& list)
 	{
 		int i = 0;
-		for (auto iter = list.begin(); iter != list.end(); iter++)
+		for (auto v : list)
 		{
-			for (int j = 0; j < M; i++)
+			for (int j = 0; j < M; j++)
 			{
-				(*this)(i, j) = (*iter)[j];
+				(*this)(i, j) = v[j];
 			}
 			i++;
 		}
@@ -229,19 +238,6 @@ public:
 			for (int i = 0; i < j; i++)
 			{
 				std::swap((*this)(i, j), (*this)(j, i));
-			}
-		}
-		return (*this);
-	}
-
-	template <typename F>
-	thistype& inPlaceCalc(F&& func)
-	{
-		for (int j = 0; j < M; j++)
-		{
-			for (int i = 0; i < N; i++)
-			{
-				(*this)(i, j) = f((*this)(i,j));
 			}
 		}
 		return (*this);

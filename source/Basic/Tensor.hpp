@@ -10,7 +10,7 @@ NameSpace_Math_Begin
 
 Tensor:
 
-Similar to Array, but is dimension-fixed and volumn-fixed.
+Similar to Array, but is dimension-fixed and volume-fixed.
 Only allow initiated from operator() and then assigned by value;
 
 */

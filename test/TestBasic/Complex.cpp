@@ -18,15 +18,13 @@ TEST(Complex, Common)
 	EXPECT_EQ(c1 * c2, 2);
 	EXPECT_EQ(c1 / c2, I(1));
 
-	EXPECT_EQ(c1.mod(), sqrt(2.0));
-	EXPECT_EQ(c1.angle(), DEG2RAD(45));
-	EXPECT_EQ(c1.angleDeg(), 45);
+	EXPECT_FLOAT_EQ(c1.mod(), sqrt(2.0));
+	EXPECT_FLOAT_EQ(c1.angle(), DEG2RAD(45));
+	EXPECT_FLOAT_EQ(c1.angleDeg(), 45);
 	EXPECT_EQ(-c1, -1 + I(-1));
 
-	EXPECT_EQ(c1 == c1, true);
-	EXPECT_EQ(c1 == c2, false);
-	EXPECT_EQ(c1 != c1, false);
-	EXPECT_EQ(c1 != c2, true);
+	EXPECT_EQ(c1, c1);
+	EXPECT_NE(c1, c2);
 
 	Complex<double> c3 = 1.0;
 	c3 += I(1.0);

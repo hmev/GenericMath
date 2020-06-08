@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <Basic/Matrix.hpp>
 #include <Basic/Complex.hpp>
+#include <iostream>
 
 NameSpace_Math_Begin
 
@@ -23,11 +24,11 @@ template struct Matrix<Complex<double>, 3, 3>;
 
 TEST(Matrix, Initialization)
 {
-	/// m1 = 0 2 4
-	///      1 3 5
+	/// m1 = 0 1 2
+	///      3 4 5
 	Matrix<double, 2, 3> m1({
 		{0, 1, 2}, 
-		{3, 4, 5},		
+		{3, 4, 5},
 	});
 	EXPECT_EQ(m1(1, 0), 3);
 	EXPECT_EQ(m1(1, 1), 4);
@@ -46,6 +47,14 @@ TEST(Matrix, Initialization)
 
 	EXPECT_EQ(m1, m2);
 	EXPECT_NE(m1, m3);
+
+	Matrix<double, 3, 2> m4({
+		{0, 3}, 
+		{1, 4},
+		{2, 5}
+	});
+
+	EXPECT_EQ(transpose(m1), m4);
 }
 
 TEST(Matrix, Common)
@@ -73,7 +82,7 @@ TEST(Matrix, Common)
 	};
 
 	Matrix<double, 3, 2> rightrst = {
-		{2, 3},
+		{2, 4},
 		{2, 3},
 		{4, 5}
 	};

@@ -3,6 +3,7 @@
 #include <cmath>
 #include <Config.h>
 #include <Basic/NumTrait.hpp>
+#include <ostream>
 
 NameSpace_Math_Begin
 
@@ -24,16 +25,14 @@ public:
 	double mod()  { return sqrt(re * re + im * im); }
 	double angle()  { return atan2(im, re); }
 	double angleDeg() { return RAD2DEG(angle()); }
-
-	template <typename T2>
-	Complex<T>& operator=(const T2& v)
+	
+	Complex<T>& operator=(const T& v)
 	{
 		re = v;
 		return (*this);
 	}
-
-	template <typename T2>
-	Complex<T>& operator=(const Complex<T2>& c)
+	
+	Complex<T>& operator=(const Complex<T>& c)
 	{
 		re = c.re; im = c.im;
 		return (*this);
@@ -42,13 +41,15 @@ public:
 	template<typename T2>
 	bool operator==(const Complex<T2>& c) const 
 	{
-		return re == c.re && im == c.im;
+		typedef typename TraitPromoter<T, T2>::promoted promoted;
+		return Trait<promoted>::equal(re, c.re) && Trait<promoted>::equal(c.im, c.im);
 	}
 
 	template <typename T2>
 	bool operator==(const T2& _re) const
 	{
-		return (re == _re) && (im == 0);
+		typedef typename TraitPromoter<T, T2>::promoted promoted;
+		return Trait<promoted>::equal(re, _re) && Trait<promoted>::equal(im, 0);
 	}
 
 	template <typename T2>
@@ -130,6 +131,13 @@ template <typename T>
 Complex<T> I(const T& value)
 {
 	return std::move(Complex<T>(T(0), value)); 
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const Complex<T>& c)
+{
+	os << c.re << "+" << c.im;
+	return os;
 }
 
 template <typename T>
